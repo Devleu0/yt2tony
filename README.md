@@ -1,5 +1,7 @@
 # Youtube Vocal Splitter
 
+[한국어](./README.ko.md) | English
+
 A pipeline tool that downloads YouTube audio, isolates vocals using Demucs, and automatically loads the result into the Tony visualizer. Optimized for NVIDIA GPUs with low VRAM (e.g., RTX 3050 4GB).
 
 ## System Requirements
