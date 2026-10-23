@@ -49,16 +49,20 @@ Tony는 기본적으로 `C:\Program Files\Tony\tony.exe`에서 찾습니다. 다
 
 ## 사용 방법
 
+앱 화면과 메시지는 쉬운 영어로 표시됩니다.
+
 1. YouTube 동영상 링크를 입력합니다.
-2. Enter 키를 누르거나 **보컬 분리 후 Tony 열기** 버튼을 선택합니다.
+2. Enter 키를 누르거나 **Split track and open vocals in Tony** 버튼을 선택합니다.
 3. 다운로드와 분리가 끝나면 보컬 트랙이 Tony에서 자동으로 열립니다.
-4. **작업 이력**에서 이전 작업을 선택하고 **보컬을 Tony에서 열기** 또는 **반주를 Tony에서 열기**를 선택하면 해당 파일을 다시 열 수 있습니다.
+4. **History**에서 이전 작업을 선택하고 **Open vocals in Tony** 또는 **Open instrumental in Tony**를 선택하면 해당 파일을 다시 열 수 있습니다.
 
 새 작업마다 별도의 결과 폴더를 사용하므로 이전 결과를 덮어쓰지 않습니다. 최초 실행 시 기존 `output/htdemucs/input_track/` 결과가 있으면 링크 정보가 없는 이력 항목으로 가져옵니다.
 
 ## 화면 미리보기
 
-![YouTube 보컬 분리기 웹 UI — YouTube 링크 입력란과 작업 이력](./docs/assets/streamlit-ui.png)
+앱 화면은 쉬운 영어로 제공됩니다.
+
+![YouTube 보컬 분리기 영어 웹 UI — YouTube 링크 입력란과 작업 이력](./docs/assets/streamlit-ui.png)
 
 ## 파이프라인 구조
 

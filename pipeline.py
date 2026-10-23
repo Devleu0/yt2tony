@@ -66,7 +66,7 @@ def initialize_history(output_dir=DEFAULT_OUTPUT_DIR):
                     VALUES (?, NULL, 'completed', ?, ?, ?)
                     """,
                     (
-                        "이전 분리 결과 (링크 정보 없음)",
+                        "Previous track (video link not saved)",
                         created_at,
                         str(legacy_vocal.resolve()),
                         str(legacy_instrumental.resolve()),
@@ -95,7 +95,7 @@ def create_history_entry(url, output_dir=DEFAULT_OUTPUT_DIR):
                 INSERT INTO history (title, url, status, created_at)
                 VALUES (?, ?, 'processing', ?)
                 """,
-                ("다운로드 중...", url, created_at),
+                ("Downloading...", url, created_at),
             )
             return cursor.lastrowid
 
@@ -138,7 +138,7 @@ def validate_youtube_url(url):
         or parsed.hostname not in valid_hosts
         or not parsed.path.strip("/")
     ):
-        raise ValueError("유효한 YouTube 동영상 URL을 입력해 주세요.")
+        raise ValueError("Enter a valid YouTube video link.")
     return url.strip()
 
 
@@ -146,10 +146,10 @@ def gpu_description():
     try:
         import torch
     except ImportError:
-        return "PyTorch가 설치되지 않았습니다."
+        return "PyTorch is not installed."
     if torch.cuda.is_available():
         return f"CUDA GPU: {torch.cuda.get_device_name(0)}"
-    return "GPU를 찾지 못해 CPU 모드로 실행합니다."
+    return "No NVIDIA GPU found. Using your CPU."
 
 
 def process_video(url, output_dir=DEFAULT_OUTPUT_DIR, on_status=None, on_title=None):
@@ -170,7 +170,7 @@ def process_video(url, output_dir=DEFAULT_OUTPUT_DIR, on_status=None, on_title=N
     process_env["PYTHONIOENCODING"] = "utf-8"
 
     try:
-        report("YouTube 오디오를 MP3로 다운로드하고 있습니다...")
+        report("Downloading audio...")
         download = subprocess.run(
             [
                 sys.executable,
@@ -198,7 +198,7 @@ def process_video(url, output_dir=DEFAULT_OUTPUT_DIR, on_status=None, on_title=N
         )
         if download.returncode:
             details = (download.stderr or download.stdout).strip()
-            raise RuntimeError(f"YouTube 오디오 다운로드에 실패했습니다.\n{details}")
+            raise RuntimeError(f"Could not download audio.\n{details}")
 
         title = next(
             (
@@ -206,14 +206,14 @@ def process_video(url, output_dir=DEFAULT_OUTPUT_DIR, on_status=None, on_title=N
                 for line in download.stdout.splitlines()
                 if line.startswith("__YT2TONY_TITLE__")
             ),
-            "YouTube 영상",
+            "YouTube track",
         )
         if on_title:
             on_title(title)
         if not temp_audio.is_file():
-            raise RuntimeError("다운로드가 완료됐지만 오디오 파일을 찾을 수 없습니다.")
+            raise RuntimeError("The download finished, but the audio file is missing.")
 
-        report("Demucs로 보컬과 반주를 분리하고 있습니다...")
+        report("Splitting vocals and instrumental...")
         import torch
 
         device = "cuda" if torch.cuda.is_available() else "cpu"
@@ -242,13 +242,13 @@ def process_video(url, output_dir=DEFAULT_OUTPUT_DIR, on_status=None, on_title=N
         )
         if separate.returncode:
             details = (separate.stderr or separate.stdout).strip()
-            raise RuntimeError(f"보컬 분리에 실패했습니다.\n{details}")
+            raise RuntimeError(f"Could not split the track.\n{details}")
 
         result_dir = output_dir / "htdemucs" / run_id
         vocal_path = result_dir / "vocals.mp3"
         instrumental_path = result_dir / "no_vocals.mp3"
         if not vocal_path.is_file() or not instrumental_path.is_file():
-            raise RuntimeError("분리는 완료됐지만 결과 파일을 찾을 수 없습니다.")
+            raise RuntimeError("The split finished, but the output files are missing.")
         return SeparationResult(title, vocal_path, instrumental_path)
     finally:
         if temp_audio.exists():
@@ -260,14 +260,14 @@ def process_video(url, output_dir=DEFAULT_OUTPUT_DIR, on_status=None, on_title=N
 def launch_tony(audio_path):
     audio_path = Path(audio_path).resolve()
     if not audio_path.is_file():
-        raise FileNotFoundError(f"오디오 파일을 찾을 수 없습니다: {audio_path}")
+        raise FileNotFoundError(f"Audio file not found: {audio_path}")
 
     tony_path = Path(
         os.environ.get("TONY_EXE", r"C:\Program Files\Tony\tony.exe")
     )
     if not tony_path.is_file():
         raise FileNotFoundError(
-            f"Tony를 찾을 수 없습니다: {tony_path}\n"
-            "TONY_EXE 환경 변수로 tony.exe 경로를 지정할 수 있습니다."
+            f"Tony was not found: {tony_path}\n"
+            "Set the TONY_EXE environment variable to your tony.exe path."
         )
     return subprocess.Popen([str(tony_path), str(audio_path)])
