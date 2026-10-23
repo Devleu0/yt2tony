@@ -41,9 +41,14 @@ if errorlevel 1 (
     exit /b 1
 )
 
-echo [Step 4] Executing main.py...
+echo [Step 4] Starting the web UI...
 echo.
-".venv\Scripts\python.exe" main.py
+".venv\Scripts\python.exe" -m streamlit run app.py
+if errorlevel 1 (
+    echo [Error] Failed to start the web UI.
+    pause
+    exit /b 1
+)
 
 echo.
 echo [System] Process terminated. Press any key to close.
