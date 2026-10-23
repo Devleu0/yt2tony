@@ -5,8 +5,8 @@ A pipeline tool that downloads YouTube audio, isolates vocals using Demucs, and 
 ## System Requirements
 
 - **OS**: Windows 10/11
-- **Python**: 3.8 or higher
-- **GPU**: NVIDIA GPU (CUDA 12.1 compatible)
+- **Python**: 3.11
+- **GPU**: NVIDIA GPU (CUDA 12.8 compatible driver)
 - **External Dependencies**:
   - **FFmpeg**: Must be installed and added to the system `PATH`.
   - **Tony**: Melody transcription software. Installed at `C:\Program Files\Tony\tony.exe`. ([Download Tony](https://code.soundsoftware.ac.uk/projects/tony))
@@ -14,21 +14,25 @@ A pipeline tool that downloads YouTube audio, isolates vocals using Demucs, and 
 ## Installation
 
 1. Clone the repository:
-```bash
-git clone https://github.com/username/youtube-vocal-splitter.git
-cd youtube-vocal-splitter
-```
+   ```bash
+   git clone https://github.com/Devleu0/yt2tony.git
+   cd yt2tony
+   ```
 
-2. (Optional but recommended) Verify FFmpeg installation:
+2. Install Python 3.11 and FFmpeg. Tony is optional and can be installed separately.
+
+3. Run `run.bat` from File Explorer or a command prompt. On its first run, it creates a local `.venv`, installs CUDA-enabled PyTorch and the project dependencies, then starts the pipeline. Later runs reuse the environment.
+
+   The setup uses PyTorch's CUDA 12.8 wheels; a compatible NVIDIA driver is required. If no supported NVIDIA GPU is available, the program falls back to CPU.
+
+Verify FFmpeg is available:
 ```bash
 ffmpeg -version
 ```
 
 ## Usage
 
-1. Execute `run.bat` from the Windows Explorer or command line.
-2. The script will automatically install PyTorch (CUDA 12.1) and required Python packages on the first run.
-3. When prompted, input the target YouTube URL.
+When prompted, input the target YouTube URL.
 
 ```text
 ==================================================
