@@ -38,14 +38,14 @@ def main():
         print(f"[Error] {error}")
         return 1
 
-    print(f"[Info] Vocal track: {result.vocal_path}")
+    print(f"[Info] Vocals: {result.vocal_path}")
     print(f"[Info] Instrumental: {result.instrumental_path}")
     try:
         launch_tony(result.vocal_path)
-        print("[Info] Vocal track opened in Tony.")
+        print("[Info] Vocals opened in Tony.")
     except FileNotFoundError as error:
         print(f"[Warning] {error}")
-        print(f"[Info] Results are saved under: {DEFAULT_OUTPUT_DIR}")
+        print(f"[Info] Tracks are saved in: {DEFAULT_OUTPUT_DIR}")
     return 0
 
 
