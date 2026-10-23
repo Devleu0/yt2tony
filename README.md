@@ -21,7 +21,7 @@ A pipeline tool that downloads YouTube audio, isolates vocals using Demucs, and 
 
 2. Install Python 3.11 and FFmpeg. Tony is optional and can be installed separately.
 
-3. Run `run.bat` from File Explorer or a command prompt. On its first run, it creates a local `.venv`, installs CUDA-enabled PyTorch and the project dependencies, then starts the pipeline. Later runs reuse the environment.
+3. Run `run.bat` from File Explorer or a command prompt. On its first run, it creates a local `.venv`, installs CUDA-enabled PyTorch and the project dependencies, then opens the browser-based interface. Later runs reuse the environment.
 
    The setup uses PyTorch's CUDA 12.8 wheels; a compatible NVIDIA driver is required. If no supported NVIDIA GPU is available, the program falls back to CPU.
 
@@ -32,19 +32,13 @@ ffmpeg -version
 
 ## Usage
 
-When prompted, input the target YouTube URL.
+Enter a YouTube video URL and press Enter or select **보컬 분리 후 Tony 열기**. Once separation finishes, the vocal track opens in Tony automatically. The history list keeps each link and its vocal/instrumental results; select an earlier item to open either track in Tony again. The existing result is also added to the history, but its original link was not recorded.
 
-```text
-==================================================
-[Info] CUDA Device detected: NVIDIA GeForce RTX 3050 Laptop GPU
-==================================================
-Youtube URL: <Paste URL here>
-```
+Each run saves separate files under `output/htdemucs/<run-id>/`, and the history database is stored in `output/history.sqlite3`. Tony is optional; if it is not installed at `C:\Program Files\Tony\tony.exe`, set the `TONY_EXE` environment variable to its executable path.
 
-4. The pipeline performs the following sequence:
-   - Downloads the audio and converts it to MP3 (`yt-dlp`).
-   - Separates the vocal track from the instrumental (`Demucs`).
-   - Launches Tony and automatically loads `vocals.mp3` for pitch visualization.
+## License
+
+This project is licensed under the GNU General Public License v3.0 only. See [LICENSE](./LICENSE) for the full terms.
 
 ## Architecture & Optimization
 
@@ -57,8 +51,9 @@ Youtube URL: <Paste URL here>
 Upon successful execution, output files are stored as follows:
 ```text
 output/
+├── history.sqlite3
 └── htdemucs/
-    └── input_track/
+    └── <run-id>/
         ├── vocals.mp3
         └── no_vocals.mp3
 ```
